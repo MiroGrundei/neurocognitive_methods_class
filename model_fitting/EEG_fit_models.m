@@ -1,8 +1,15 @@
-%% Set-up Script for free energy approximation using VI-algorithm (spm_vi_glm.m) written by Dirk Ostwald
+%% Set-up Script for free energy approximation using VI-algorithm (spm_vi_glm.m)
 % directory prep
 % -------------------------------------------------------------------------
-clc;clear all;close all
-addpath('
+addpath('~/programs/toolboxes/spm12')
+addpath(genpath('/media/samg/DATA/Sam/SBL/neurocognitive_methods_class'))
+
+% set data directory
+data_dir        = fullfile('/media/samg/DATA/Sam/SBL/data/SCAN/preprocessing');
+
+% load defaults
+spm('defaults', 'EEG');
+
 pdir        = ('/media/samg/DATA/Sam/SBL/data')                             ; % project directory
 verbose     = 1                                                             ;
 
