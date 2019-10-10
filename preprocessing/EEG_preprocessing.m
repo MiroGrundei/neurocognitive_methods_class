@@ -51,46 +51,50 @@ end
 %                               EDIT EVENTS
 %% ========================================================================
 
+SJs = [42];
 prefix          = '';
-ID              = [subject '_' project];
 
-D               = spm_eeg_load(fullfile(sj_dir,[prefix ID '.mat']));
+for sj = 1:numel(SJs) 
+    
+    ID              = [subject '_' project];
 
-% store current events
-evts            = D.events;
-new_evts        = D.events;
-vals            = [];
+    D               = spm_eeg_load(fullfile(sj_dir,[prefix ID '.mat']));
 
-% loop through all events
-for i           = 1:length(evts)
-   if isempty(evts(i).value)
-       evts(i).value = 999;            % change empty to some number, otherwise matlab is annoying
-   end
-   vals         = [vals,evts(i).value];% get values, save in list
-   new_evts(i).value = [];             % extracted values get deleted
+    % store current events
+    evts            = D.events;
+    new_evts        = D.events;
+    vals            = [];
+
+    % loop through all events
+    for i           = 1:length(evts)
+       if isempty(evts(i).value)
+           evts(i).value = 999;            % change empty to some number, otherwise matlab is annoying
+       end
+       vals         = [vals,evts(i).value];% get values, save in list
+       new_evts(i).value = [];             % extracted values get deleted
+    end
+
+    % find and classify different triggers
+    end_trig        = find([evts.value] == 127);
+    start_trig      = find([evts.value] == 126);
+    time_trig       = find([evts.value] == 128);
+    evt_trig        = find([evts.value] ==11|[evts.value]==12|[evts.value]==21| ...
+                   [evts.value]==22|[evts.value]==33);
+
+    % enter time trigger
+    for i           = 1:length(time_trig)
+       new_evts(time_trig(i)).value = vals(evt_trig(i));
+    end
+
+    % enter start trigger
+    for i           = 1:length(start_trig)
+       new_evts(start_trig(i)).value = 126;
+    end
+
+    % store recoded trigger in events and save
+    D               = events(D, 1, new_evts);
+    D.save;
 end
-
-% find and classify different triggers
-end_trig        = find([evts.value] == 127);
-start_trig      = find([evts.value] == 126);
-time_trig       = find([evts.value] == 128);
-evt_trig        = find([evts.value] ==11|[evts.value]==12|[evts.value]==21| ...
-               [evts.value]==22|[evts.value]==33);
-           
-% enter time trigger
-for i           = 1:length(time_trig)
-   new_evts(time_trig(i)).value = vals(evt_trig(i));
-end
-
-% enter start trigger
-for i           = 1:length(start_trig)
-   new_evts(start_trig(i)).value = 126;
-end
-
-% store recoded trigger in events and save
-D               = events(D, 1, new_evts);
-D.save;
-
 
 %% ========================================================================
 %                   MONTAGE > HPF > DOWNSAMPLING
