@@ -1,4 +1,4 @@
-%% Set-up Script for free energy approximation using VI-algorithm (spm_vi_glm.m)
+%% Set-up Script for free energy approximation using VI-algorithm
 % directory prep
 % -------------------------------------------------------------------------
 addpath('~/programs/toolboxes/spm12')
