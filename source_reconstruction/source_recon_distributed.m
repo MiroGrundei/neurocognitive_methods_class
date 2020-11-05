@@ -8,11 +8,11 @@ clc; clear; close
 addpath(genpath('C:\Users\Miro\Documents\Code\MATLAB\toolboxes\spm12'))
 % spm('defaults', 'EEG');
 
-base_dir = 'E:\SCAN_class\';
+base_dir = 'E:\SCAN_class\neurocognitive_methods_class\';                   % change to directory          
 prefix = 'SEP_rbletdhmar_';                                                 % prefix from averaged and preprocessed meeg file
 out_fol = 'distributed_SR';
 
-subjects = [4];
+subjects = [3,4];
 % time windows of interest
 wois = [18 23; ...                                                          % N20
         40 60; ...                                                          % P50
@@ -28,13 +28,13 @@ for s = subjects
     fprintf('Processing subject: %s\n',sub)
     
     % dircetory for saving resulting file
-    out_dir = fullfile(base_dir, 'analysis', 'source_recon', sub, out_fol);
+    out_dir = fullfile(base_dir, 'data', 'source_recon', sub, out_fol);
     if ~exist(out_dir,'dir')
         mkdir(out_dir) 
     end 
     
     % load data & copy to out directory (dublicate)
-    data = fullfile(base_dir,'analysis','erp',sub,'avg',sprintf('%s%s_SBL.mat',prefix,sub));
+    data = fullfile(base_dir,'data','erp',sub,sprintf('%s%s_SBL.mat',prefix,sub));
     D = spm_eeg_load(data);    
     S = [];
     S.D = D;
@@ -100,7 +100,7 @@ for s = 1:numel(subjects)
     sub = sprintf('sub-%02d',subjects(s));
     
     % get the data with inverted forward model
-    data = fullfile(base_dir,'analysis','source_recon',sub,out_fol,sprintf('%s%s_SBL.mat',prefix,sub));
+    data = fullfile(base_dir, 'data', 'source_recon', sub, out_fol,sprintf('%s%s_SBL.mat',prefix,sub));
     
     % loop through time windows of interest
     for t = 1:size(wois,1) 
@@ -125,8 +125,9 @@ end
 % -------------------------------------------------------------------------
 
 suffix = '_f_1';                                                            % work with weird SPM suffixes
-res_dir = fullfile(base_dir,'analysis', 'source_recon',out_fol);            % results directory
+res_dir = fullfile(base_dir,'data', 'source_recon',out_fol);                % results directory
 
+% subjects = [3,4];
 % loop through time windows of interest
 for w = 1:size(wois,1)
     
@@ -135,7 +136,7 @@ for w = 1:size(wois,1)
     % loop through subjects and collect the path to nifti file 
     for s = 1:numel(subjects)    
         sub = sprintf('sub-%02d',subjects(s));
-        subs_data{s} = fullfile(base_dir,'analysis', 'source_recon', sub,out_fol,        ...
+        subs_data{s} = fullfile(base_dir,'data', 'source_recon',sub,out_fol,        ...
                                [prefix sub '_SBL_'                      ...
                                 num2str(w) '_t' num2str(wois(w,1)) '_' num2str(wois(w,2)) suffix '.nii']);
     end
