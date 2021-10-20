@@ -91,7 +91,9 @@ dname = 'P50';
 GA = fullfile(base_dir,'data','source_recon','ECD',dname,fname);
 D = spm_eeg_load(GA);
 
-% % remove scaling
+% If the VB algorithm encounters a convergence failure, this is likely due 
+% to some erroneous scaling in our ERP data and can be removed by uncommenting
+% and running this function:
 % D = rm_scale(D,1);
 % D.save;
 
